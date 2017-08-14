@@ -72,7 +72,7 @@ function countdown() {
 		this.outputTime(div,endtime);
 		var timeinterval = setInterval(function(){
     		countdown.outputTime(div,endtime);
-
+            var t = countdown.timeRemaining(endtime);
 			if(t.total<=0){
 				clearInterval(timeinterval);
 			}
@@ -85,7 +85,7 @@ function countdown() {
 		var s = Math.floor( (t/1000) % 60 );
 		var m = Math.floor( (t/1000/60) % 60 );
 		var h = Math.floor( (t/(1000*60*60)) % 24 );
-		var d = Math.floor( t/(1000*60*60*24) );
+		var d = Math.floor( t/(1000*60*60*24) % 7 );
 		var w = Math.floor( t/(1000*60*60*24*7) );
 		// alert(w);
 		return {
