@@ -33,23 +33,14 @@ function football() {
             fbegin = (new Date(dt - tzoffset))
 
             if (today <= fbegin) {
-                // alert(game.id);
-                // fbegin=(new Date(dt - tzoffset))
                 break;
             }
+	    fbegin = new Date(new Date().getFullYear()+1, 9, 1);
         }
-
-
-        // alert(fbegin);
-
-
-
-        // fbegin=new Date(2016,10,02,18,30);
-        fend = new Date('2017-01-02');
 
         fball.innerHTML = 'NO';
 
-        if (today >= fbegin && today <= fend) {
+        if (today >= fbegin) {
             fball.innerHTML = 'YES'
             document.getElementById('timer').style.display = 'none';
             document.getElementById('countdown').style.display = 'none';
@@ -64,10 +55,6 @@ function football() {
 
 function countdown() {
 	this.init = function(div,endtime) {
-		// alert(div)
-		// alert(endtime)
-		// alert(this.timeRemaining(endtime).weeks);
-
 		var timer = document.getElementById(div);
 		this.outputTime(div,endtime);
 		var timeinterval = setInterval(function(){
@@ -80,7 +67,6 @@ function countdown() {
 
     }
 	this.timeRemaining = function(endtime){
-		// alert(endtime)
 		var t = Date.parse(endtime) - Date.parse(new Date());
 		var s = Math.floor( (t/1000) % 60 );
 		var m = Math.floor( (t/1000/60) % 60 );
@@ -133,12 +119,6 @@ function countdown() {
 		}
 
 		html = html + '</table>';
-
-		// timer.innerHTML = t.days + ' days<br>' +
-		//                   t.hours + ' hours<br>' +
-		//                   t.minutes + ' minutes<br>' +
-		//                   t.seconds + ' seconds';
-
 		timer.innerHTML = html;
 	}
 
