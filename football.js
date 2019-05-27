@@ -51,73 +51,73 @@ function football() {
 }
 
 function countdown() {
-	this.init = function(div,endtime) {
-		var timer = document.getElementById(div);
-		this.outputTime(div,endtime);
-		var timeinterval = setInterval(function(){
-    		countdown.outputTime(div,endtime);
+    this.init = function(div,endtime) {
+        var timer = document.getElementById(div);
+        this.outputTime(div,endtime);
+        var timeinterval = setInterval(function(){
+            countdown.outputTime(div,endtime);
             var t = countdown.timeRemaining(endtime);
-			if(t.total<=0){
-				clearInterval(timeinterval);
-			}
-		},1000);
+            if(t.total<=0){
+                clearInterval(timeinterval);
+            }
+        },1000);
 
     }
-	this.timeRemaining = function(endtime){
-		var t = Date.parse(endtime) - Date.parse(new Date());
-		var s = Math.floor( (t/1000) % 60 );
-		var m = Math.floor( (t/1000/60) % 60 );
-		var h = Math.floor( (t/(1000*60*60)) % 24 );
-		var d = Math.floor( t/(1000*60*60*24) % 7 );
-		var w = Math.floor( t/(1000*60*60*24*7) );
-		// alert(w);
-		return {
-			'total': t,
-			'weeks': w,
-			'days': d,
-			'hours': h,
-			'minutes': m,
-			'seconds': s
-		};
-	}
+    this.timeRemaining = function(endtime){
+        var t = Date.parse(endtime) - Date.parse(new Date());
+        var s = Math.floor( (t/1000) % 60 );
+        var m = Math.floor( (t/1000/60) % 60 );
+        var h = Math.floor( (t/(1000*60*60)) % 24 );
+        var d = Math.floor( t/(1000*60*60*24) % 7 );
+        var w = Math.floor( t/(1000*60*60*24*7) );
+        // alert(w);
+        return {
+            'total': t,
+            'weeks': w,
+            'days': d,
+            'hours': h,
+            'minutes': m,
+            'seconds': s
+        };
+    }
 
-	this.outputTime = function(div,endtime){
-		var t = countdown.timeRemaining(endtime);
-		var html = '<table>';
+    this.outputTime = function(div,endtime){
+        var t = countdown.timeRemaining(endtime);
+        var html = '<table>';
 
-		if(t.weeks==1){
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.weeks).slice(-2) + '</td><td class=\'left\'>  week</tr>';
-		}else if (t.weeks>1) {
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.weeks).slice(-2) + '</td><td class=\'left\'>  weeks</tr>';
-		}
+        if(t.weeks==1){
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.weeks).slice(-2) + '</td><td class=\'left\'>  week</tr>';
+        }else if (t.weeks>1) {
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.weeks).slice(-2) + '</td><td class=\'left\'>  weeks</tr>';
+        }
 
-		if(t.days==1){
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.days).slice(-2) + '</td><td class=\'left\'>  day</tr>';
-		}else if (t.days>1||t.weeks>1) {
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.days).slice(-2) + '</td><td class=\'left\'>  days</tr>';
-		}
+        if(t.days==1){
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.days).slice(-2) + '</td><td class=\'left\'>  day</tr>';
+        }else if (t.days>1||t.weeks>1) {
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.days).slice(-2) + '</td><td class=\'left\'>  days</tr>';
+        }
 
-		if(t.hours==1){
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.hours).slice(-2) + '</td><td class=\'left\'  hour</tr>';
-		}else if (t.hours>1||t.days>1) {
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.hours).slice(-2) + '</td><td class=\'left\'>  hours</tr>';
-		}
+        if(t.hours==1){
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.hours).slice(-2) + '</td><td class=\'left\'  hour</tr>';
+        }else if (t.hours>1||t.days>1) {
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.hours).slice(-2) + '</td><td class=\'left\'>  hours</tr>';
+        }
 
-		if(t.minutes==1){
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.minutes).slice(-2) + '</td><td class=\'left\'>  minute</tr>';
-		}else if (t.minutes>1||t.hours>1) {
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.minutes).slice(-2) + '</td><td class=\'left\'>  minutes</tr>';
-		}
+        if(t.minutes==1){
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.minutes).slice(-2) + '</td><td class=\'left\'>  minute</tr>';
+        }else if (t.minutes>1||t.hours>1) {
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.minutes).slice(-2) + '</td><td class=\'left\'>  minutes</tr>';
+        }
 
-		if(t.seconds==1){
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.seconds).slice(-2) + '</td><td class=\'left\'>second</tr>';
-		}else if (t.seconds>1||t.minutes>1) {
-			html = html + '<tr><td class=\'right\'>' + ('0' + t.seconds).slice(-2) + '</td><td class=\'left\'>seconds</tr>';
-		}
+        if(t.seconds==1){
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.seconds).slice(-2) + '</td><td class=\'left\'>second</tr>';
+        }else if (t.seconds>1||t.minutes>1) {
+            html = html + '<tr><td class=\'right\'>' + ('0' + t.seconds).slice(-2) + '</td><td class=\'left\'>seconds</tr>';
+        }
 
-		html = html + '</table>';
-		timer.innerHTML = html;
-	}
+        html = html + '</table>';
+        timer.innerHTML = html;
+    }
 
 }
 
