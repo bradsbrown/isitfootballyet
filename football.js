@@ -1,6 +1,6 @@
-function dateStrToDateTime(game) { 
+function dateStrToDateTime(game) {
     dt = new Date(game.date);
-    var tzoffset = -1 * (new Date()).getTimeZoneOffset() * 60000; // offset in ms
+    var tzoffset = -1 * (new Date()).getTimezoneOffset() * 60000; // offset in ms
     startDate = new Date(dt - tzoffset)
     return startDate
 }
@@ -8,12 +8,13 @@ function dateStrToDateTime(game) {
 function football() {
     this.init = function(a) {
 
-		var q = new Date();
+        var q = new Date();
         var m = q.getMonth();
         var d = q.getDate();
         var y = q.getFullYear();
         var today = new Date(y, m, d);
         var fball = document.getElementById("football");
+        var countdownHeader = document.getElementById("countdown");
 
         var games;
 
@@ -29,22 +30,24 @@ function football() {
                 json = data.responseJSON;
             }
         });
-        
+
 
         var gameDateTimes = games.map(dateStrToDateTime);
-        if ( gameDateTimes[0] <= today <= gateDateTimes[-1] ) {
-            fball.innerHTML = 'YES <br> Next game in:';
+        if ( gameDateTimes[0] <= today && today <= gameDateTimes[gameDateTimes.length - 1] ) {
+            fball.innerHTML = 'YES';
+            countdownHeader.innerHTML = 'Next game in:';
         } else {
-            fball.innerHTML = 'NO <br> Season starts in:';
+            fball.innerHTML = 'NO';
+            countdownHeader.innerHTML = 'Season starts in:';
         }
-        
+
         gameDateTimes = gameDateTimes.filter(gameDt => today <= gameDt);
-        if gameDateTimes.isEmpty() {
-            fbegin = new Date(new Date().getFullYear() + 1, 9 1);
+        if (!Array.isArray(gameDateTimes) || !gameDateTimes.length) {
+            fbegin = new Date(new Date().getFullYear() + 1, 9, 1);
         } else {
-            fbegin = gameDateTimes[0]; 
+            fbegin = gameDateTimes[0];
         }
-        
+
         countdown.init('timer', fbegin);
 
     }
