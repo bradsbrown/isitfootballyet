@@ -1,3 +1,9 @@
+function dateStrToDateTime(game) { 
+    dt = new Date(game.date);
+    var tzoffset = -1 * (new Date()).getTimeZoneOffset() * 60000; // offset in ms
+    startDate = new Date(dt - tzoffset)
+    return startDate
+}
 
 function football() {
     this.init = function(a) {
@@ -23,32 +29,23 @@ function football() {
                 json = data.responseJSON;
             }
         });
+        
 
-        for (var i = 0; i < games.length; i++) {
-            var game = games[i];
-
-            dt = new Date(game.date);
-
-            var tzoffset = -1 * (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-            fbegin = (new Date(dt - tzoffset))
-
-            if (today <= fbegin) {
-                break;
-            }
-	    fbegin = new Date(new Date().getFullYear()+1, 9, 1);
-        }
-
-        fball.innerHTML = 'NO';
-
-        if (today >= fbegin) {
-            fball.innerHTML = 'YES'
-            document.getElementById('timer').style.display = 'none';
-            document.getElementById('countdown').style.display = 'none';
+        var gameDateTimes = games.map(dateStrToDateTime);
+        if ( gameDateTimes[0] <= today <= gateDateTimes[-1] ) {
+            fball.innerHTML = 'YES <br> Next game in:';
         } else {
-            fball.innerHTML = 'NO';
-			countdown.init('timer',fbegin)
-
+            fball.innerHTML = 'NO <br> Season starts in:';
         }
+        
+        gameDateTimes = gameDateTimes.filter(gameDt => today <= gameDt);
+        if gameDateTimes.isEmpty() {
+            fbegin = new Date(new Date().getFullYear() + 1, 9 1);
+        } else {
+            fbegin = gameDateTimes[0]; 
+        }
+        
+        countdown.init('timer', fbegin);
 
     }
 }
