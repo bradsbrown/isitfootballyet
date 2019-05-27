@@ -34,18 +34,21 @@ function football() {
 
         var gameDateTimes = games.map(dateStrToDateTime);
         if ( gameDateTimes[0] <= today && today <= gameDateTimes[gameDateTimes.length - 1] ) {
+            // within the provided season, countdown to the next game
             fball.innerHTML = 'YES';
             countdownHeader.innerHTML = 'Next game in:';
+            gameDateTimes = gameDateTimes.filter(gameDt => today <= gameDt);
+            fbegin = gameDateTimes[0]
         } else {
+            // outside the season, countdown to the next one
             fball.innerHTML = 'NO';
             countdownHeader.innerHTML = 'Season starts in:';
-        }
-
-        gameDateTimes = gameDateTimes.filter(gameDt => today <= gameDt);
-        if (!Array.isArray(gameDateTimes) || !gameDateTimes.length) {
-            fbegin = new Date(new Date().getFullYear() + 1, 9, 1);
-        } else {
-            fbegin = gameDateTimes[0];
+            if ( today < gameDateTimes[0] ) {
+                fbegin = gameDateTimes[0]
+            } else {
+                // if we're past the listed season, look to "next" Sep 1
+                fbegin = new Date(new Date().getFullYear() + 1, 9, 1);
+            }
         }
 
         countdown.init('timer', fbegin);
