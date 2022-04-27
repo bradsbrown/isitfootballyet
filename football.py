@@ -57,10 +57,12 @@ SAMPLE = {
 #########################
 CALENDAR_URL = "https://baylorbears.com/calendar.ashx/calendar.rss"
 SPORT_ID = 4
-HOME_LOCATION = "Waco, TX"
+HOME_LOCATION = "Waco"
 
 HEADERS = {"user-agent": "IsItFootballYet/2.6.0"}
-DATE_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
+DATE_RE = re.compile(r"\d{4}\-\d{1,2}\-\d{1,2}")
+DATE_FORMAT = "%Y-%m-%d"
+DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 HTML_RE = re.compile(r"http(s)?://(\S)+")
 
 #################
@@ -128,18 +130,27 @@ class ScheduleEntry:
     def local_time(self):
         desc = self.start_time
         if isinstance(desc, datetime.datetime):
-            desc = desc.strftime("%I:%M %p")
+            if desc.time() == datetime.time(0, 0):
+                desc = "TBA"
+            else:
+                desc = desc.strftime("%I:%M %p")
         return desc
 
 
 def _build_entry(entry):
     start_time = entry["ev_startdate"]
-    try:
-        time_str = f"{start_time.split('.')[0]}+0000"
-        start_time = datetime.datetime.strptime(time_str, DATE_FORMAT)
-        start_time = start_time.astimezone(zoneinfo.ZoneInfo("America/Chicago"))
-    except:
-        pass
+    if DATE_RE.match(start_time):
+        date = datetime.date.fromisoformat(start_time)
+        start_time = datetime.datetime(
+            date.year, date.month, date.day, tzinfo=datetime.timezone.utc
+        )
+    else:
+        try:
+            time_str = f"{start_time.split('.')[0]}+0000"
+            start_time = datetime.datetime.strptime(time_str, DATE_FORMAT)
+            start_time = start_time.astimezone(zoneinfo.ZoneInfo("America/Chicago"))
+        except:
+            pass
     summary_lines = entry["summary"].split("\\n")
     streaming_links = {
         k.rstrip(":"): v
@@ -158,12 +169,18 @@ def _build_entry(entry):
     )
 
 
-@functools.lru_cache
-def get_calendar(ttl_hash):
-    res = requests.get(CALENDAR_URL, params={"sport_id": SPORT_ID}, headers=HEADERS)
+def _get_calendar(year=None):
+    params = {"sport_id": SPORT_ID}
+    res = requests.get(CALENDAR_URL, params=params, headers=HEADERS)
     res.raise_for_status()
     data = feedparser.parse(res.text)
-    return [_build_entry(d) for d in data["entries"]]
+    res = [_build_entry(d) for d in data["entries"]]
+    return res
+
+
+@functools.lru_cache
+def get_calendar(ttl_hash):
+    return _get_calendar()
 
 
 def get_ttl_hash(seconds=3600):
@@ -180,7 +197,7 @@ def _is_football(events):
 ############
 
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, title="Is It Football Yet?")
 app.css.config.serve_locally = True
 server = app.server
 
@@ -225,7 +242,15 @@ def get_estimate_start_date():
     current_year = today.year
 
     this_year_sat = _first_saturday(current_year)
-    return this_year_sat if this_year_sat > today else _first_saturday(current_year + 1)
+    date = this_year_sat if this_year_sat > today else _first_saturday(current_year + 1)
+
+    return datetime.datetime(
+        date.year,
+        date.month,
+        date.day,
+        11,
+        tzinfo=zoneinfo.ZoneInfo("America/Chicago"),
+    )
 
 
 class UnitsInSeconds(enum.Enum):
