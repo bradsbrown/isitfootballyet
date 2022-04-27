@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "isitfootballyet"
+version = "0.1.0"
+description = ""
+authors = ["Brad Brown <brad@bradsbrown.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.26.0"
+feedparser = "^6.0.8"
+dash = "^2.0.0"
+uvicorn = "^0.15.0"
+gunicorn = "^20.1.0"
+
+[tool.poetry.dev-dependencies]
+black = "^21.12b0"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
