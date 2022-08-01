@@ -60,7 +60,7 @@ SPORT_ID = 4
 HOME_LOCATION = "Waco"
 
 HEADERS = {"user-agent": "IsItFootballYet/2.6.0"}
-DATE_RE = re.compile(r"\d{4}\-\d{1,2}\-\d{1,2}")
+DATE_RE = re.compile(r"^\d{4}\-\d{1,2}\-\d{1,2}$")
 DATE_FORMAT = "%Y-%m-%d"
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 HTML_RE = re.compile(r"http(s)?://(\S)+")
@@ -145,12 +145,16 @@ def _build_entry(entry):
             date.year, date.month, date.day, tzinfo=datetime.timezone.utc
         )
     else:
+        time_str = f"{start_time.split('.')[0]}+0000"
         try:
-            time_str = f"{start_time.split('.')[0]}+0000"
-            start_time = datetime.datetime.strptime(time_str, DATE_FORMAT)
+            start_time = datetime.datetime.strptime(time_str, DATETIME_FORMAT)
             start_time = start_time.astimezone(zoneinfo.ZoneInfo("America/Chicago"))
         except:
-            pass
+            try:
+                start_time = datetime.datetime.strptime(time_str, DATE_FORMAT)
+                start_time = start_time.astimezone(zoneinfo.ZoneInfo("America/Chicago"))
+            except:
+                pass
     summary_lines = entry["summary"].split("\\n")
     streaming_links = {
         k.rstrip(":"): v
